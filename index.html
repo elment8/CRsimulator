@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nescafé Child Rights Risk Prioritization Simulator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Maven+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Maven Pro', sans-serif;
+        }
+        .info-icon {
+            cursor: pointer;
+            position: relative;
+            display: inline-block;
+            margin-left: 8px;
+        }
+        .info-icon .tooltip {
+            visibility: hidden;
+            width: 280px;
+            background-color: #334155;
+            color: #fff;
+            text-align: left;
+            border-radius: 6px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -140px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.8rem;
+            line-height: 1.4;
+        }
+        .info-icon:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+        .matrix-cell {
+            transition: all 0.3s ease-in-out;
+            transform: scale(1);
+        }
+        .matrix-cell.active {
+            transform: scale(1.1);
+            box-shadow: 0 0 0 4px white, 0 0 0 6px #3b82f6;
+            z-index: 10;
+        }
+        .section-header {
+            font-family: 'Maven Pro', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .sticky-header {
+            backdrop-filter: blur(8px);
+            transition: all 0.3s ease;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <div class="container mx-auto p-4 md:p-8">
+
+        <!-- Sticky Header Section -->
+        <div class="sticky top-0 z-50 bg-slate-50 pb-4 mb-8 shadow-sm border-b border-slate-200 sticky-header">
+            <!-- Header with Logo -->
+            <div class="flex items-center justify-between mb-6">
+                <!-- Title Section -->
+                <div class="flex-1 text-center">
+                    <h1 class="text-3xl md:text-4xl font-bold text-slate-900" style="font-family: 'Maven Pro', sans-serif;">Nescafé Child Rights Risk Prioritization Simulator</h1>
+                    <p class="mt-2 text-slate-600">Assess and visualize child rights risks within supply chains</p>
+                </div>
+                
+                
+            </div>
+
+            <!-- Preset Selector -->
+            <div class="max-w-md mx-auto">
+                <label for="country-preset" class="block text-sm font-medium text-slate-700 mb-2">Load Country Example:</label>
+                <select id="country-preset" class="w-full bg-white border border-slate-300 rounded-md shadow-sm p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <option value="custom">-- Select a preset --</option>
+                    <option value="uganda">Uganda</option>
+                    <option value="brazil">Brazil</option>
+                    <option value="indonesia">Indonesia</option>
+                </select>
+            </div>
+        </div>
+
+        <main>
+
+            <!-- Risk Factors and Results Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+                <!-- Input Factors -->
+                <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Contextual Risk -->
+                    <div class="bg-white p-6 rounded-xl shadow-md">
+                        <h2 class="text-xl font-semibold mb-4 text-blue-800 bg-blue-100 -m-6 p-4 rounded-t-xl border-b-4 border-blue-500 section-header">Contextual Risk Factors</h2>
+                        <div id="contextual-risk-factors" class="space-y-4 mt-6"></div>
+                    </div>
+
+                    <!-- Supply Chain Risk -->
+                    <div class="bg-white p-6 rounded-xl shadow-md">
+                        <h2 class="text-xl font-semibold mb-4 text-purple-800 bg-purple-100 -m-6 p-4 rounded-t-xl border-b-4 border-purple-500 section-header">Supply Chain Risk Factors</h2>
+                        <div id="supply-chain-risk-factors" class="space-y-4 mt-6"></div>
+                    </div>
+
+                    <!-- Managed Risk -->
+                     <div class="bg-white p-6 rounded-xl shadow-md">
+                        <h2 class="text-xl font-semibold mb-4 text-emerald-800 bg-emerald-100 -m-6 p-4 rounded-t-xl border-b-4 border-emerald-500 section-header">Managed Risk Factors</h2>
+                        <div id="managed-risk-factors" class="space-y-4 mt-6"></div>
+                    </div>
+
+                    <!-- Business Risk -->
+                    <div class="bg-white p-6 rounded-xl shadow-md">
+                        <h2 class="text-xl font-semibold mb-4 text-red-800 bg-red-100 -m-6 p-4 rounded-t-xl border-b-4 border-red-500 section-header">Business Risk Importance</h2>
+                        <div id="business-risk-factors" class="space-y-4 mt-6"></div>
+                    </div>
+
+                    <!-- Severity Modifier -->
+                    <div class="bg-white p-6 rounded-xl shadow-md">
+                        <h2 class="text-xl font-semibold mb-4 text-amber-800 bg-amber-100 -m-6 p-4 rounded-t-xl border-b-4 border-amber-500 section-header">Severity Modifier</h2>
+                        <div id="severity-modifier-factors" class="space-y-4 mt-6"></div>
+                    </div>
+                </div>
+
+                <!-- Results -->
+                <div class="lg:col-span-1">
+                    <div class="bg-white p-6 rounded-xl shadow-md sticky top-8">
+                        <h2 class="text-xl font-semibold mb-4 text-center text-slate-800">Risk Analysis Results</h2>
+                        
+                        <!-- Prioritization Table -->
+                        <div class="mb-6 border border-slate-200 rounded-lg p-4 space-y-3">
+                            <h3 class="text-lg font-semibold text-center text-slate-700 mb-2">Prioritization Summary</h3>
+                            <div class="flex justify-between items-center text-sm">
+                                <span class="text-slate-600">Inherent Risk Score:</span>
+                                <span id="summary-inherent-score" class="font-bold text-slate-800 px-2 py-1 bg-slate-100 rounded">1.00</span>
+                            </div>
+                            <div class="flex justify-between items-center text-sm">
+                                <span class="text-slate-600">Managed Risk Score:</span>
+                                <span id="summary-managed-score" class="font-bold text-slate-800 px-2 py-1 bg-slate-100 rounded">1.00</span>
+                            </div>
+                            <div class="flex justify-between items-center text-sm">
+                                <span class="text-slate-600">Resulting Risk Level:</span>
+                                <span id="summary-risk-level" class="font-bold px-2 py-1 rounded">Medium</span>
+                            </div>
+                            <hr class="my-2">
+                             <div class="flex justify-between items-center text-sm">
+                                <span class="text-slate-600">Business Risk Score:</span>
+                                <span id="summary-business-score" class="font-bold text-slate-800 px-2 py-1 bg-slate-100 rounded">1.00</span>
+                            </div>
+                            <div class="flex justify-between items-center text-sm">
+                                <span class="text-slate-600">Business Importance:</span>
+                                <span id="summary-business-importance" class="font-bold px-2 py-1 rounded">Low</span>
+                            </div>
+                            <div class="flex justify-between items-center text-sm">
+                                <span class="text-slate-600">Severity Modifier Score:</span>
+                                <span id="summary-severity-score" class="font-bold text-slate-800 px-2 py-1 bg-slate-100 rounded">1.00</span>
+                            </div>
+                            <hr class="my-2">
+                            <div class="text-center pt-2">
+                                <div class="text-sm text-slate-500 flex items-center justify-center gap-2">
+                                    Final Prioritization / Site Ranking
+                                    <span class="info-icon text-slate-400 hover:text-blue-600">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.055.352.176.288.469l-.738 3.468c-.064.293.006.399.287.47l.45.082.082-.38-2.29-.287a.5.5 0 0 1-.497-.527l.738-3.468a.5.5 0 0 1 .497-.469l2.29.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/></svg>
+                                        <span class="tooltip">Priority 1: VERY HIGH risk + YES business importance<br>Priority 2: VERY HIGH risk + NO business importance<br>Priority 3: HIGH risk + YES business importance<br>Priority 4: HIGH risk + NO business importance<br>Priority 5: MEDIUM risk + YES business importance<br>Priority 6: MEDIUM risk + NO business importance<br>Priority 7: LOW risk + YES business importance<br>Priority 8: LOW risk + NO business importance</span>
+                                    </span>
+                                </div>
+                                <div id="summary-final-prioritization" class="text-2xl font-bold mt-1 text-blue-600">Low (8)</div>
+                            </div>
+                        </div>
+
+                        <!-- Risk Matrix -->
+                        <div class="bg-white rounded-lg border border-slate-200 overflow-hidden relative">
+                            <!-- Matrix Title -->
+                            <div class="bg-slate-800 text-white text-center py-3 px-4 font-semibold text-sm tracking-wide flex items-center justify-center gap-2">
+                                RISK LEVEL FOR INHERENT AND MANAGED RISKS
+                                <button id="matrix-key-btn" class="w-5 h-5 bg-white bg-opacity-20 rounded-full flex items-center justify-center text-xs font-bold hover:bg-opacity-30 transition-all duration-200" title="Risk Level Color Key">
+                                    i
+                                </button>
+                            </div>
+                            
+                            <div class="flex">
+                                <!-- Left Column - Managed Risks -->
+                                <div class="w-20 flex flex-col">
+                                    <div class="bg-slate-700 text-white text-center py-3 px-3 font-semibold text-xs tracking-wide h-10 flex items-center justify-center">
+                                        MANAGED RISKS
+                                    </div>
+                                    <div class="bg-slate-100 text-slate-700 text-center py-3 px-3 font-bold text-sm h-10 flex items-center justify-center border-b border-slate-200">1</div>
+                                    <div class="bg-slate-100 text-slate-700 text-center py-3 px-3 font-bold text-sm h-10 flex items-center justify-center border-b border-slate-200">2</div>
+                                    <div class="bg-slate-100 text-slate-700 text-center py-3 px-3 font-bold text-sm h-10 flex items-center justify-center border-b border-slate-200">3</div>
+                                    <div class="bg-slate-100 text-slate-700 text-center py-3 px-3 font-bold text-sm h-10 flex items-center justify-center">4</div>
+                                </div>
+                                
+                                <!-- Matrix Grid -->
+                                <div class="flex-1">
+                                    <!-- Top Row - Inherent Risks Header -->
+                                    <div class="grid grid-cols-4">
+                                        <div class="bg-slate-700 text-white text-center py-3 px-2 font-semibold text-xs tracking-wide h-10 flex items-center justify-center border-r border-slate-600">LOW</div>
+                                        <div class="bg-slate-700 text-white text-center py-3 px-2 font-semibold text-xs tracking-wide h-10 flex items-center justify-center border-r border-slate-600">MEDIUM</div>
+                                        <div class="bg-slate-700 text-white text-center py-3 px-2 font-semibold text-xs tracking-wide h-10 flex items-center justify-center border-r border-slate-600">HIGH</div>
+                                        <div class="bg-slate-700 text-white text-center py-3 px-2 font-semibold text-xs tracking-wide h-10 flex items-center justify-center">VERY HIGH</div>
+                                    </div>
+                                    
+                                    <!-- Matrix Cells -->
+                                    <div id="risk-matrix" class="grid grid-cols-4">
+                                        <!-- Matrix will be populated by JS -->
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Bottom Label -->
+                            <div class="text-center py-2 font-medium text-slate-600 text-xs tracking-wide bg-slate-50">INHERENT RISKS</div>
+                            
+                            <!-- Color Key Tooltip -->
+                            <div id="matrix-key-tooltip" class="absolute top-16 right-4 bg-white border border-slate-200 rounded-lg shadow-lg p-4 z-50 hidden">
+                                <div class="text-sm font-semibold text-slate-700 mb-3">Risk Level Color Key</div>
+                                <div class="space-y-2">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-4 h-4 bg-green-200 rounded"></div>
+                                        <span class="text-sm text-slate-600">LOW</span>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-4 h-4 bg-yellow-200 rounded"></div>
+                                        <span class="text-sm text-slate-600">MEDIUM</span>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-4 h-4 bg-orange-200 rounded"></div>
+                                        <span class="text-sm text-slate-600">HIGH</span>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-4 h-4 bg-red-200 rounded"></div>
+                                        <span class="text-sm text-slate-600">VERY HIGH</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- DATA DEFINITIONS ---
+            const riskData = {
+                contextual: [
+                    { id: 'lower-secondary-school-completion-rate', label: 'Lower secondary school completion rate', weight: 0.20, tooltip: 'Percentage of children completing lower secondary education.', options: [{ text: '90 - 100%', rating: 1 }, { text: '80 - 89.9%', rating: 2 }, { text: '60 - 79.9%', rating: 3 }, { text: '0 - 59.9%', rating: 4 }] },
+                    { id: 'poverty-rate', label: 'Poverty rate', weight: 0.20, tooltip: 'Percentage of the population living below the national poverty line.', options: [{ text: '0 - 4.9%', rating: 1 }, { text: '5 - 9.9%', rating: 2 }, { text: '10 - 14.9%', rating: 3 }, { text: '15 - 100%', rating: 4 }] },
+                    { id: 'children-in-child-labour', label: 'Children in child labour', weight: 0.20, tooltip: 'Percentage of children aged 5-17 engaged in child labour.', options: [{ text: '0 - 2.5%', rating: 1 }, { text: '2.6 - 4.9%', rating: 2 }, { text: '5 - 9.9%', rating: 3 }, { text: '10 - 100%', rating: 4 }] },
+                    { id: 'child-protection-system-maturity', label: 'Child protection system maturity', weight: 0.20, tooltip: 'Effectiveness of national and local systems to protect children.', options: [{ text: 'Good practice/systems', rating: 1 }, { text: 'Meets minimum levels', rating: 2 }, { text: 'Requires improvement', rating: 3 }, { text: 'Critical to address', rating: 4 }] },
+                    { id: 'community-protective-index', label: 'Community protective index', weight: 0.20, tooltip: 'Community-level infrastructure and services that protect children.', options: [{ text: '7.5 - 10', rating: 1 }, { text: '5 - 7.4', rating: 2 }, { text: '2.5 - 4.9', rating: 3 }, { text: '0 - 2.4', rating: 4 }] },
+                ],
+                supply: [
+                    { id: 'child-labor-incident-rate', label: 'Child Labor Incident Rate', weight: 0.25, tooltip: 'Number of confirmed child labor cases per 100 farms. Worst forms count as 2x incidents.', options: [{ text: '0 cases/100 farms', rating: 1 }, { text: '1-2 cases/100 farms', rating: 2 }, { text: '3-5 cases/100 farms', rating: 3 }, { text: '6+ cases/100 farms', rating: 4 }] },
+                    { id: 'farm-compliance-non-compliance', label: 'Farm Compliance Non-Compliance', weight: 0.15, tooltip: 'Percentage of farms with child protection non-compliance.', options: [{ text: '0-10% non-compliance', rating: 1 }, { text: '11-25% non-compliance', rating: 2 }, { text: '26-50% non-compliance', rating: 3 }, { text: '51%+ non-compliance', rating: 4 }] },
+                    { id: 'to-what-extent-are-work-processes-manual', label: 'To what extent are work processes manual', weight: 0.10, tooltip: 'Extent to which tasks are performed by hand rather than by machine.', options: [{ text: 'Little extent', rating: 1 }, { text: 'Some extent', rating: 2 }, { text: 'Great extent', rating: 3 }, { text: 'Full extent', rating: 4 }] },
+                    { id: 'to-what-extent-are-work-processes-low-skilled', label: 'To what extent are work processes low skilled', weight: 0.10, tooltip: 'Extent to which tasks require minimal training, making them accessible to children.', options: [{ text: 'Little extent', rating: 1 }, { text: 'Some extent', rating: 2 }, { text: 'Great extent', rating: 3 }, { text: 'Full extent', rating: 4 }] },
+                    { id: 'to-what-extent-are-work-processes-hazardous-under-national-law', label: 'To what extent are work processes hazardous under national law', weight: 0.10, tooltip: 'Extent to which tasks are legally defined as hazardous for minors.', options: [{ text: 'Little extent', rating: 1 }, { text: 'Some extent', rating: 2 }, { text: 'Great extent', rating: 3 }, { text: 'Full extent', rating: 4 }] },
+                    { id: 'total-workforce', label: 'Total workforce size', weight: 0.10, tooltip: 'The total number of workers in the supply chain, indicating scale of potential impact.', options: [{ text: '0 - 500', rating: 1 }, { text: '501 - 1500', rating: 2 }, { text: '1501 - 5000', rating: 3 }, { text: '5001+', rating: 4 }] },
+                    { id: 'to-what-extent-are-migrant-workers-part-of-the-workforce', label: 'To what extent are migrant workers part of the workforce', weight: 0.10, tooltip: 'Extent to which migrant workers, who may be more vulnerable, are part of the workforce.', options: [{ text: 'Little extent', rating: 1 }, { text: 'Some extent', rating: 2 }, { text: 'Great extent', rating: 3 }, { text: 'Full extent', rating: 4 }] },
+                    { id: 'hrdd-maturity-readiness-assessment-suppliers', label: 'HRDD maturity readiness assessment suppliers', weight: 0.10, tooltip: 'Human Rights Due Diligence maturity and readiness of suppliers.', options: [{ text: 'Low risk', rating: 1 }, { text: 'Medium risk', rating: 2 }, { text: 'High risk', rating: 3 }, { text: 'Very high risk', rating: 4 }] },
+                ],
+                managed: [
+                    { id: 'remediation-case-resolution-rate', label: 'Remediation (Case Resolution Rate)', weight: 0.50, tooltip: 'Proportion of child cases resolved with successful outcomes.', options: [{ text: '81-100% resolved', rating: 1 }, { text: '61-80% resolved', rating: 2 }, { text: '41-60% resolved', rating: 3 }, { text: '0-40% resolved', rating: 4 }] },
+                    { id: 'remediation-school-reintegration', label: 'Remediation (School Reintegration)', weight: 0.17, tooltip: 'Proportion of child labor cases leading to school re-enrollment.', options: [{ text: '61-100% reintegrated', rating: 1 }, { text: '41-60% reintegrated', rating: 2 }, { text: '21-40% reintegrated', rating: 3 }, { text: '0-20% reintegrated', rating: 4 }] },
+                    { id: 'audit-certification-performance', label: 'Audit/Certification Performance', weight: 0.33, tooltip: 'Audit or certification results score for the site.', options: [{ text: 'Compliance A-B', rating: 1 }, { text: 'Compliance C', rating: 2 }, { text: 'Compliance D', rating: 3 }, { text: 'Compliance F / Not audited 2y', rating: 4 }] },
+                ],
+                businessRisk: [
+                    { id: 'volume-no-of-farms', label: 'Volume / No. of farms', weight: 0.25, tooltip: 'Whether the site represents significant volume or number of farms.', options: [{ text: 'No', rating: 1 }, { text: 'Yes', rating: 2 }] },
+                    { id: 'farmer-connect-units', label: 'Farmer Connect Units', weight: 0.25, tooltip: 'Whether the site has Farmer Connect units.', options: [{ text: 'No', rating: 1 }, { text: 'Yes', rating: 2 }] },
+                    { id: 'nestle-other-commodity-sourcing', label: 'Nestlé other commodity sourcing', weight: 0.25, tooltip: 'Whether Nestlé sources other commodities from this site.', options: [{ text: 'No', rating: 1 }, { text: 'Yes', rating: 2 }] },
+                    { id: 'strategic-importance', label: 'Strategic importance', weight: 0.25, tooltip: 'Whether the site has strategic importance for the business.', options: [{ text: 'No', rating: 1 }, { text: 'Yes', rating: 2 }] },
+                ],
+                severityModifier: [
+                    { id: 'average-hours-worked-child-labor-severity', label: 'Average Hours Worked (Child Labor Severity)', weight: 1.0, tooltip: 'Average hours worked by children in child labor situations.', options: [{ text: '0-1 hours', rating: 1 }, { text: '1-2 hours', rating: 2 }, { text: '2-4 hours', rating: 3 }, { text: '4+ hours', rating: 4 }] }
+                ]
+            };
+
+            const countryPresets = {
+                uganda: { 
+                    // Contextual Risk (High - 4.0)
+                    'lower-secondary-school-completion-rate': 4, 'poverty-rate': 4, 'children-in-child-labour': 4, 'child-protection-system-maturity': 4, 'community-protective-index': 4, 
+                    // Supply Chain Risk (High - 3.5)
+                    'child-labor-incident-rate': 4, 'farm-compliance-non-compliance': 3, 'to-what-extent-are-work-processes-manual': 4, 'to-what-extent-are-work-processes-low-skilled': 4, 'to-what-extent-are-work-processes-hazardous-under-national-law': 3, 'total-workforce': 4, 'to-what-extent-are-migrant-workers-part-of-the-workforce': 2, 'hrdd-maturity-readiness-assessment-suppliers': 3, 
+                    // Managed Risk (Low - 1.0) - Limited remediation capacity
+                    'remediation-case-resolution-rate': 4, 'remediation-school-reintegration': 4, 'audit-certification-performance': 4, 
+                    // Business Risk (Low - 1.0) - Not strategic
+                    'volume-no-of-farms': 1, 'farmer-connect-units': 1, 'nestle-other-commodity-sourcing': 1, 'strategic-importance': 1, 
+                    // Severity Modifier (High - 4.0)
+                    'average-hours-worked-child-labor-severity': 4 
+                },
+                brazil: { 
+                    // Contextual Risk (Medium - 2.2)
+                    'lower-secondary-school-completion-rate': 2, 'poverty-rate': 2, 'children-in-child-labour': 3, 'child-protection-system-maturity': 2, 'community-protective-index': 2, 
+                    // Supply Chain Risk (Medium-High - 3.0)
+                    'child-labor-incident-rate': 3, 'farm-compliance-non-compliance': 2, 'to-what-extent-are-work-processes-manual': 4, 'to-what-extent-are-work-processes-low-skilled': 3, 'to-what-extent-are-work-processes-hazardous-under-national-law': 3, 'total-workforce': 4, 'to-what-extent-are-migrant-workers-part-of-the-workforce': 2, 'hrdd-maturity-readiness-assessment-suppliers': 2, 
+                    // Managed Risk (Medium - 2.0) - Moderate remediation
+                    'remediation-case-resolution-rate': 2, 'remediation-school-reintegration': 2, 'audit-certification-performance': 2, 
+                    // Business Risk (High - 2.0) - Strategic importance
+                    'volume-no-of-farms': 2, 'farmer-connect-units': 2, 'nestle-other-commodity-sourcing': 2, 'strategic-importance': 2, 
+                    // Severity Modifier (Medium - 2.0)
+                    'average-hours-worked-child-labor-severity': 2 
+                },
+                indonesia: { 
+                    // Contextual Risk (Low-Medium - 2.2)
+                    'lower-secondary-school-completion-rate': 2, 'poverty-rate': 2, 'children-in-child-labour': 2, 'child-protection-system-maturity': 3, 'community-protective-index': 2, 
+                    // Supply Chain Risk (Medium - 2.5)
+                    'child-labor-incident-rate': 2, 'farm-compliance-non-compliance': 3, 'to-what-extent-are-work-processes-manual': 4, 'to-what-extent-are-work-processes-low-skilled': 4, 'to-what-extent-are-work-processes-hazardous-under-national-law': 3, 'total-workforce': 4, 'to-what-extent-are-migrant-workers-part-of-the-workforce': 1, 'hrdd-maturity-readiness-assessment-suppliers': 3, 
+                    // Managed Risk (High - 3.0) - Good remediation systems
+                    'remediation-case-resolution-rate': 1, 'remediation-school-reintegration': 1, 'audit-certification-performance': 1, 
+                    // Business Risk (High - 2.0) - Strategic importance
+                    'volume-no-of-farms': 2, 'farmer-connect-units': 2, 'nestle-other-commodity-sourcing': 2, 'strategic-importance': 2, 
+                    // Severity Modifier (Low - 1.0)
+                    'average-hours-worked-child-labor-severity': 1 
+                },
+            };
+
+            // Preset Notes - Detailed explanations for each factor
+            const presetNotes = {
+                uganda: {
+                    'lower-secondary-school-completion-rate': 'Only ~28% boys / 25% girls complete junior secondary education.',
+                    'poverty-rate': '~20.3% (2019) below national poverty line.',
+                    'children-in-child-labour': 'High prevalence of child labor in agricultural sector.',
+                    'child-protection-system-maturity': 'System nascent; ~30% lack birth registration; services limited.',
+                    'community-protective-index': 'Limited community infrastructure and protective services.',
+                    'child-labor-incident-rate': 'High incident rate with confirmed cases in coffee sector.',
+                    'farm-compliance-non-compliance': 'Moderate non-compliance rates in supply chain.',
+                    'to-what-extent-are-work-processes-manual': 'Smallholder coffee hand-picked/processed extensively.',
+                    'to-what-extent-are-work-processes-low-skilled': 'Most tasks require minimal training, accessible to children.',
+                    'to-what-extent-are-work-processes-hazardous-under-national-law': 'Some hazardous tasks present in coffee processing.',
+                    'total-workforce': '~500k coffee households; >> 5,000 workers.',
+                    'to-what-extent-are-migrant-workers-part-of-the-workforce': 'Some seasonal migration patterns.',
+                    'hrdd-maturity-readiness-assessment-suppliers': 'Moderate HRDD maturity with some gaps.',
+                    'remediation-case-resolution-rate': 'Low resolution: ~30% of identified cases successfully resolved.',
+                    'remediation-school-reintegration': 'Low reintegration: ~20% of child labor cases lead to school re-enrollment.',
+                    'audit-certification-performance': 'Limited audit coverage and certification programs.',
+                    'volume-no-of-farms': 'Not a major volume source for Nestlé.',
+                    'farmer-connect-units': 'No Farmer Connect units present.',
+                    'nestle-other-commodity-sourcing': 'No other commodity sourcing from this region.',
+                    'strategic-importance': 'Not strategically important for business operations.',
+                    'average-hours-worked-child-labor-severity': 'Children work 4+ hours daily in labor situations.'
+                },
+                brazil: {
+                    'lower-secondary-school-completion-rate': 'Moderate completion rates with regional variations.',
+                    'poverty-rate': '~25% below national line (2022).',
+                    'children-in-child-labour': 'Moderate prevalence with some regional hotspots.',
+                    'child-protection-system-maturity': 'Moderate system strength with some gaps.',
+                    'community-protective-index': 'Moderate community infrastructure and services.',
+                    'child-labor-incident-rate': 'Moderate incident rate with some confirmed cases.',
+                    'farm-compliance-non-compliance': 'Moderate non-compliance: ~30% of farms have some compliance gaps.',
+                    'to-what-extent-are-work-processes-manual': 'Extensive manual processes in coffee production.',
+                    'to-what-extent-are-work-processes-low-skilled': 'Some tasks require minimal training.',
+                    'to-what-extent-are-work-processes-hazardous-under-national-law': 'Some hazardous tasks present.',
+                    'total-workforce': 'Large workforce; >> 5,000 workers.',
+                    'to-what-extent-are-migrant-workers-part-of-the-workforce': 'Seasonal migration NE→SE regions.',
+                    'hrdd-maturity-readiness-assessment-suppliers': 'Moderate HRDD; certifications/programs in places.',
+                    'remediation-case-resolution-rate': 'Moderate resolution: ~60% of identified cases successfully resolved.',
+                    'remediation-school-reintegration': 'Moderate reintegration: ~40% of child labor cases lead to school re-enrollment.',
+                    'audit-certification-performance': 'Moderate performance: Certifications/programs in places.',
+                    'volume-no-of-farms': 'Significant volume source for Nestlé coffee.',
+                    'farmer-connect-units': 'Farmer Connect units present in region.',
+                    'nestle-other-commodity-sourcing': 'Nestlé sources other commodities from this region.',
+                    'strategic-importance': 'Strategically important for business operations.',
+                    'average-hours-worked-child-labor-severity': 'Children work 1-2 hours daily in labor situations.'
+                },
+                indonesia: {
+                    'lower-secondary-school-completion-rate': 'Good completion rates with strong education system.',
+                    'poverty-rate': 'Low poverty rates with effective social programs.',
+                    'children-in-child-labour': 'Low prevalence due to effective prevention programs.',
+                    'child-protection-system-maturity': 'Moderate system strength with some regional variations.',
+                    'community-protective-index': 'Good community infrastructure and protective services.',
+                    'child-labor-incident-rate': 'Low incident rate with few confirmed cases.',
+                    'farm-compliance-non-compliance': 'Moderate non-compliance with ongoing improvement programs.',
+                    'to-what-extent-are-work-processes-manual': 'Extensive manual processes in coffee production.',
+                    'to-what-extent-are-work-processes-low-skilled': 'Most tasks require minimal training.',
+                    'to-what-extent-are-work-processes-hazardous-under-national-law': 'Some hazardous tasks present.',
+                    'total-workforce': 'Large workforce; >> 5,000 workers.',
+                    'to-what-extent-are-migrant-workers-part-of-the-workforce': 'Minimal migrant worker presence.',
+                    'hrdd-maturity-readiness-assessment-suppliers': 'Moderate HRDD maturity with ongoing improvements.',
+                    'remediation-case-resolution-rate': 'High resolution: ~80% of identified cases successfully resolved.',
+                    'remediation-school-reintegration': 'High reintegration: ~70% of child labor cases lead to school re-enrollment.',
+                    'audit-certification-performance': 'Good performance: Strong audit coverage and certification programs.',
+                    'volume-no-of-farms': 'Significant volume source for Nestlé coffee.',
+                    'farmer-connect-units': 'Farmer Connect units present in region.',
+                    'nestle-other-commodity-sourcing': 'Nestlé sources other commodities from this region.',
+                    'strategic-importance': 'Strategically important for business operations.',
+                    'average-hours-worked-child-labor-severity': 'Children work 0-1 hours daily in labor situations.'
+                }
+            };
+
+            // --- DOM ELEMENTS ---
+            const containers = {
+                contextual: document.getElementById('contextual-risk-factors'),
+                supply: document.getElementById('supply-chain-risk-factors'),
+                managed: document.getElementById('managed-risk-factors'),
+                businessRisk: document.getElementById('business-risk-factors'),
+                severityModifier: document.getElementById('severity-modifier-factors')
+            };
+            const summaryInherentScoreEl = document.getElementById('summary-inherent-score');
+            const summaryManagedScoreEl = document.getElementById('summary-managed-score');
+            const summaryRiskLevelEl = document.getElementById('summary-risk-level');
+            const summaryBusinessScoreEl = document.getElementById('summary-business-score');
+            const summaryBusinessImportanceEl = document.getElementById('summary-business-importance');
+            const summarySeverityScoreEl = document.getElementById('summary-severity-score');
+            const summaryFinalPrioritizationEl = document.getElementById('summary-final-prioritization');
+            
+            const riskMatrixEl = document.getElementById('risk-matrix');
+            const presetSelector = document.getElementById('country-preset');
+
+            // --- FUNCTIONS ---
+
+            function createFormField(factor) {
+                const div = document.createElement('div');
+                div.innerHTML = `
+                    <label for="${factor.id}" class="block text-sm font-medium text-slate-700 flex items-center">
+                        ${factor.label}
+                        ${factor.tooltip ? `<span class="info-icon text-slate-400 hover:text-blue-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.055.352.176.288.469l-.738 3.468c-.064.293.006.399.287.47l.45.082.082-.38-2.29-.287a.5.5 0 0 1-.497-.527l.738-3.468a.5.5 0 0 1 .497-.469l2.29.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/></svg>
+                            <span class="tooltip">${factor.tooltip}</span>
+                        </span>` : ''}
+                    </label>
+                    <select id="${factor.id}" data-weight="${factor.weight}" class="risk-input mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm">
+                        ${factor.options.map(opt => `<option value="${opt.rating}">${opt.text}</option>`).join('')}
+                    </select>
+                    <div id="${factor.id}-notes" class="mt-2 p-2 bg-blue-50 border-l-4 border-blue-200 text-xs text-slate-600 hidden">
+                        <strong>Note:</strong> <span class="preset-note-text"></span>
+                    </div>
+                `;
+                return div;
+            }
+
+            function populateForm() {
+                for (const category in riskData) {
+                    riskData[category].forEach(factor => containers[category].appendChild(createFormField(factor)));
+                }
+            }
+
+            function calculateScores() {
+                const scores = {};
+                for (const category in riskData) {
+                    scores[category] = 0;
+                    riskData[category].forEach(factor => {
+                        const el = document.getElementById(factor.id);
+                        if (el) {
+                            scores[category] += parseFloat(el.value) * factor.weight;
+                        }
+                    });
+                }
+                
+                // Calculate Inherent Risk Score (Contextual + Supply Chain)
+                const inherentCtxWeight = 0.2;
+                const inherentSupWeight = 0.5;
+                const inherentScore = scores.contextual * inherentCtxWeight + scores.supply * inherentSupWeight;
+
+                // Calculate Overall Risk Score (Inherent + Managed)
+                const overallRiskScore = inherentScore + scores.managed;
+
+                // Calculate Business Risk Importance
+                const businessRiskScore = scores.businessRisk;
+
+                // Calculate Severity Modifier Score
+                const severityScore = scores.severityModifier;
+
+                updateUI(inherentScore, scores.managed, businessRiskScore, severityScore, overallRiskScore);
+            }
+            
+            function getRiskProfile(matrixRow, matrixCol) {
+                 const levelMap = [
+                    // Managed Risk: 1 (row 1)
+                    ['Low', 'Low', 'Medium', 'High'], 
+                    // Managed Risk: 2 (row 2)
+                    ['Low', 'Medium', 'High', 'High'], 
+                    // Managed Risk: 3 (row 3)
+                    ['Medium', 'High', 'High', 'Very High'], 
+                    // Managed Risk: 4 (row 4)
+                    ['High', 'High', 'Very High', 'Very High']
+                 ];
+
+                 // Adjust for 0-based array index
+                 const level = levelMap[matrixRow - 1][matrixCol - 1];
+                 let color = 'bg-slate-100 text-slate-800';
+                 if (level === 'Low') color = 'bg-green-100 text-green-800';
+                 if (level === 'Medium') color = 'bg-yellow-100 text-yellow-800';
+                 if (level === 'High') color = 'bg-red-100 text-red-800';
+                 if (level === 'Very High') color = 'bg-red-200 text-red-900';
+
+                 return { level, color };
+            }
+
+            function updateUI(inherentScore, managedScore, businessRiskScore, severityScore, overallRiskScore) {
+                const activeCol = Math.min(4, Math.max(1, Math.ceil(inherentScore)));
+                const activeRow = Math.min(4, Math.max(1, Math.ceil(managedScore)));
+
+                // Get Risk Level from Matrix
+                const riskProfile = getRiskProfile(activeRow, activeCol);
+                const riskLevel = riskProfile.level; // 'Low', 'Medium', 'High', 'Very High'
+
+                // Determine Business Importance
+                const businessImportance = businessRiskScore >= 1.5 ? 'High' : 'Low';
+                const businessImportanceColor = businessImportance === 'High' ? 'bg-orange-100 text-orange-800' : 'bg-green-100 text-green-800';
+
+                // Determine Final Prioritization / Site Ranking
+                let finalPriority = '';
+                let finalPriorityColor = '';
+                let priorityNumber = 0;
+                
+                // Prioritization logic based on risk level and business importance
+                if (riskLevel === 'Very High' && businessImportance === 'High') {
+                    finalPriority = 'Very High (1)';
+                    priorityNumber = 1;
+                    finalPriorityColor = 'text-red-600';
+                } else if (riskLevel === 'Very High' && businessImportance === 'Low') {
+                    finalPriority = 'Very High (2)';
+                    priorityNumber = 2;
+                    finalPriorityColor = 'text-red-500';
+                } else if (riskLevel === 'High' && businessImportance === 'High') {
+                    finalPriority = 'High (3)';
+                    priorityNumber = 3;
+                    finalPriorityColor = 'text-orange-600';
+                } else if (riskLevel === 'High' && businessImportance === 'Low') {
+                    finalPriority = 'High (4)';
+                    priorityNumber = 4;
+                    finalPriorityColor = 'text-orange-500';
+                } else if (riskLevel === 'Medium' && businessImportance === 'High') {
+                    finalPriority = 'Medium (5)';
+                    priorityNumber = 5;
+                    finalPriorityColor = 'text-yellow-600';
+                } else if (riskLevel === 'Medium' && businessImportance === 'Low') {
+                    finalPriority = 'Medium (6)';
+                    priorityNumber = 6;
+                    finalPriorityColor = 'text-yellow-500';
+                } else if (riskLevel === 'Low' && businessImportance === 'High') {
+                    finalPriority = 'Low (7)';
+                    priorityNumber = 7;
+                    finalPriorityColor = 'text-blue-600';
+                } else if (riskLevel === 'Low' && businessImportance === 'Low') {
+                    finalPriority = 'Low (8)';
+                    priorityNumber = 8;
+                    finalPriorityColor = 'text-blue-500';
+                }
+                
+                // Update Summary Table
+                summaryInherentScoreEl.textContent = inherentScore.toFixed(2);
+                summaryManagedScoreEl.textContent = managedScore.toFixed(2);
+                summaryRiskLevelEl.textContent = riskLevel;
+                summaryRiskLevelEl.className = `font-bold px-2 py-1 rounded ${riskProfile.color}`;
+                summaryBusinessScoreEl.textContent = businessRiskScore.toFixed(2);
+                summaryBusinessImportanceEl.textContent = businessImportance;
+                summaryBusinessImportanceEl.className = `font-bold px-2 py-1 rounded ${businessImportanceColor}`;
+                summarySeverityScoreEl.textContent = severityScore.toFixed(2);
+                summaryFinalPrioritizationEl.textContent = finalPriority;
+                summaryFinalPrioritizationEl.className = `text-2xl font-bold mt-1 ${finalPriorityColor}`;
+
+                // Update Matrix
+                updateMatrix(activeRow, activeCol);
+            }
+            
+            function updateMatrix(activeRow, activeCol) {
+                riskMatrixEl.innerHTML = '';
+                
+                // Risk levels and colors as per the image
+                const matrixData = [
+                    // Row 1 (Managed Risk: 1) - Bottom row in visual
+                    [
+                        { level: 'LOW', color: 'bg-green-200 text-green-800' },
+                        { level: 'LOW', color: 'bg-green-200 text-green-800' },
+                        { level: 'MEDIUM', color: 'bg-yellow-200 text-yellow-800' },
+                        { level: 'HIGH', color: 'bg-red-200 text-red-800' }
+                    ],
+                    // Row 2 (Managed Risk: 2)
+                    [
+                        { level: 'LOW', color: 'bg-green-200 text-green-800' },
+                        { level: 'MEDIUM', color: 'bg-yellow-200 text-yellow-800' },
+                        { level: 'HIGH', color: 'bg-red-200 text-red-800' },
+                        { level: 'HIGH', color: 'bg-red-200 text-red-800' }
+                    ],
+                    // Row 3 (Managed Risk: 3)
+                    [
+                        { level: 'MEDIUM', color: 'bg-yellow-200 text-yellow-800' },
+                        { level: 'HIGH', color: 'bg-red-200 text-red-800' },
+                        { level: 'HIGH', color: 'bg-red-200 text-red-800' },
+                        { level: 'VERY HIGH', color: 'bg-red-300 text-red-900' }
+                    ],
+                    // Row 4 (Managed Risk: 4) - Top row in visual
+                    [
+                        { level: 'HIGH', color: 'bg-red-200 text-red-800' },
+                        { level: 'HIGH', color: 'bg-red-200 text-red-800' },
+                        { level: 'VERY HIGH', color: 'bg-red-300 text-red-900' },
+                        { level: 'VERY HIGH', color: 'bg-red-300 text-red-900' }
+                    ]
+                ];
+
+                for (let row = 0; row < 4; row++) {
+                    for (let col = 0; col < 4; col++) {
+                        const cell = document.createElement('div');
+                        const cellData = matrixData[row][col];
+                        const scoreRow = 4 - row; // Convert visual row to score row
+                        const scoreCol = col + 1;
+                        
+                        // Add border classes based on position
+                        let borderClasses = '';
+                        if (col < 3) borderClasses += ' border-r border-slate-200';
+                        if (row < 3) borderClasses += ' border-b border-slate-200';
+                        
+                        cell.className = `matrix-cell w-full h-10 flex items-center justify-center ${cellData.color}${borderClasses} transition-all duration-200 hover:shadow-sm`;
+                        cell.dataset.row = scoreRow;
+                        cell.dataset.col = scoreCol;
+                        riskMatrixEl.appendChild(cell);
+                    }
+                }
+                
+                const activeCell = riskMatrixEl.querySelector(`[data-row="${activeRow}"][data-col="${activeCol}"]`);
+                
+                if(activeCell) {
+                    activeCell.classList.add('ring-2', 'ring-blue-400', 'ring-offset-1', 'shadow-lg');
+                }
+            }
+            
+            function applyPreset(country) {
+                if (country === 'custom') {
+                    // Hide all preset notes when custom is selected
+                    for (const category in riskData) {
+                        riskData[category].forEach(factor => {
+                            const notesEl = document.getElementById(`${factor.id}-notes`);
+                            if (notesEl) {
+                                notesEl.classList.add('hidden');
+                            }
+                        });
+                    }
+                    return;
+                }
+                
+                const presetValues = countryPresets[country];
+                const notes = presetNotes[country];
+
+                // Apply values to all form fields and show notes
+                for (const id in presetValues) {
+                    const el = document.getElementById(id);
+                    const notesEl = document.getElementById(`${id}-notes`);
+                    const noteTextEl = notesEl?.querySelector('.preset-note-text');
+                    
+                    if (el) {
+                        el.value = presetValues[id];
+                    }
+                    
+                    // Show preset note if available
+                    if (notesEl && noteTextEl && notes[id]) {
+                        noteTextEl.textContent = notes[id];
+                        notesEl.classList.remove('hidden');
+                    } else if (notesEl) {
+                        notesEl.classList.add('hidden');
+                    }
+                }
+
+                calculateScores();
+            }
+
+            // --- INITIALIZATION ---
+            populateForm();
+            calculateScores();
+
+            // --- EVENT LISTENERS ---
+            document.querySelectorAll('.risk-input').forEach(input => {
+                input.addEventListener('change', () => {
+                    presetSelector.value = 'custom';
+                    
+                    // Hide preset notes when user manually changes values
+                    const notesEl = document.getElementById(`${input.id}-notes`);
+                    if (notesEl) {
+                        notesEl.classList.add('hidden');
+                    }
+                    
+                    calculateScores();
+                });
+            });
+            presetSelector.addEventListener('change', (e) => applyPreset(e.target.value));
+            
+            // Add event listener for matrix key button
+            const matrixKeyBtn = document.getElementById('matrix-key-btn');
+            const matrixKeyTooltip = document.getElementById('matrix-key-tooltip');
+            
+            if (matrixKeyBtn && matrixKeyTooltip) {
+                matrixKeyBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    matrixKeyTooltip.classList.toggle('hidden');
+                });
+                
+                // Close tooltip when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (!matrixKeyBtn.contains(e.target) && !matrixKeyTooltip.contains(e.target)) {
+                        matrixKeyTooltip.classList.add('hidden');
+                    }
+                });
+            }
+
+        });
+    </script>
+
+</body>
+</html>
+
+
