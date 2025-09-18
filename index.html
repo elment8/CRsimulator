@@ -300,8 +300,7 @@
                     { id: 'to-what-extent-are-work-processes-low-skilled', label: 'To what extent are work processes low skilled', weight: 0.10, tooltip: 'Extent to which tasks require minimal training, making them accessible to children.', options: [{ text: 'Little extent', rating: 1 }, { text: 'Some extent', rating: 2 }, { text: 'Great extent', rating: 3 }, { text: 'Full extent', rating: 4 }] },
                     { id: 'to-what-extent-are-work-processes-hazardous-under-national-law', label: 'To what extent are work processes hazardous under national law', weight: 0.10, tooltip: 'Extent to which tasks are legally defined as hazardous for minors.', options: [{ text: 'Little extent', rating: 1 }, { text: 'Some extent', rating: 2 }, { text: 'Great extent', rating: 3 }, { text: 'Full extent', rating: 4 }] },
                     { id: 'total-workforce', label: 'Total workforce size', weight: 0.10, tooltip: 'The total number of workers in the supply chain, indicating scale of potential impact.', options: [{ text: '0 - 500', rating: 1 }, { text: '501 - 1500', rating: 2 }, { text: '1501 - 5000', rating: 3 }, { text: '5001+', rating: 4 }] },
-                    { id: 'to-what-extent-are-migrant-workers-part-of-the-workforce', label: 'To what extent are migrant workers part of the workforce', weight: 0.10, tooltip: 'Extent to which migrant workers, who may be more vulnerable, are part of the workforce.', options: [{ text: 'Little extent', rating: 1 }, { text: 'Some extent', rating: 2 }, { text: 'Great extent', rating: 3 }, { text: 'Full extent', rating: 4 }] },
-                    { id: 'hrdd-maturity-readiness-assessment-suppliers', label: 'HRDD maturity readiness assessment suppliers', weight: 0.10, tooltip: 'Human Rights Due Diligence maturity and readiness of suppliers.', options: [{ text: 'Low risk', rating: 1 }, { text: 'Medium risk', rating: 2 }, { text: 'High risk', rating: 3 }, { text: 'Very high risk', rating: 4 }] },
+                    { id: 'to-what-extent-are-migrant-workers-part-of-the-workforce', label: 'To what extent are migrant workers part of the workforce', weight: 0.20, tooltip: 'Extent to which migrant workers, who may be more vulnerable, are part of the workforce.', options: [{ text: 'Little extent', rating: 1 }, { text: 'Some extent', rating: 2 }, { text: 'Great extent', rating: 3 }, { text: 'Full extent', rating: 4 }] },
                 ],
                 managed: [
                     { id: 'remediation-case-resolution-rate', label: 'Remediation (Case Resolution Rate)', weight: 0.30, tooltip: 'Proportion of child cases resolved with successful outcomes.', options: [{ text: '81-100% resolved', rating: 1 }, { text: '61-80% resolved', rating: 2 }, { text: '41-60% resolved', rating: 3 }, { text: '0-40% resolved', rating: 4 }] },
@@ -326,7 +325,7 @@
                     // Contextual Risk (High - 4.0)
                     'lower-secondary-school-completion-rate': 4, 'poverty-rate': 4, 'children-in-child-labour': 4, 'child-protection-system-maturity': 4, 'community-protective-index': 4, 
                     // Supply Chain Risk (High - 3.5)
-                    'child-labor-incident-rate': 4, 'farm-compliance-non-compliance': 3, 'to-what-extent-are-work-processes-manual': 4, 'to-what-extent-are-work-processes-low-skilled': 4, 'to-what-extent-are-work-processes-hazardous-under-national-law': 3, 'total-workforce': 4, 'to-what-extent-are-migrant-workers-part-of-the-workforce': 2, 'hrdd-maturity-readiness-assessment-suppliers': 3, 
+                    'child-labor-incident-rate': 4, 'farm-compliance-non-compliance': 3, 'to-what-extent-are-work-processes-manual': 4, 'to-what-extent-are-work-processes-low-skilled': 4, 'to-what-extent-are-work-processes-hazardous-under-national-law': 3, 'total-workforce': 4, 'to-what-extent-are-migrant-workers-part-of-the-workforce': 2, 
                     // Managed Risk (Low - 1.0) - Limited remediation capacity
                     'remediation-case-resolution-rate': 4, 'remediation-school-reintegration': 4, 'audit-certification-performance': 4, 'hrdd-maturity-supplier': 4, 'farms-monitoring-remediation': 4, 
                     // Business Risk (Low - 1.0) - Not strategic
@@ -338,7 +337,7 @@
                     // Contextual Risk (Medium - 2.2)
                     'lower-secondary-school-completion-rate': 2, 'poverty-rate': 2, 'children-in-child-labour': 3, 'child-protection-system-maturity': 2, 'community-protective-index': 2, 
                     // Supply Chain Risk (Medium-High - 3.0)
-                    'child-labor-incident-rate': 3, 'farm-compliance-non-compliance': 2, 'to-what-extent-are-work-processes-manual': 4, 'to-what-extent-are-work-processes-low-skilled': 3, 'to-what-extent-are-work-processes-hazardous-under-national-law': 3, 'total-workforce': 4, 'to-what-extent-are-migrant-workers-part-of-the-workforce': 2, 'hrdd-maturity-readiness-assessment-suppliers': 2, 
+                    'child-labor-incident-rate': 3, 'farm-compliance-non-compliance': 2, 'to-what-extent-are-work-processes-manual': 4, 'to-what-extent-are-work-processes-low-skilled': 3, 'to-what-extent-are-work-processes-hazardous-under-national-law': 3, 'total-workforce': 4, 'to-what-extent-are-migrant-workers-part-of-the-workforce': 2, 
                     // Managed Risk (Medium - 2.0) - Moderate remediation
                     'remediation-case-resolution-rate': 2, 'remediation-school-reintegration': 2, 'audit-certification-performance': 2, 'hrdd-maturity-supplier': 2, 'farms-monitoring-remediation': 2, 
                     // Business Risk (High - 2.0) - Strategic importance
@@ -350,7 +349,7 @@
                     // Contextual Risk (Low-Medium - 2.2)
                     'lower-secondary-school-completion-rate': 2, 'poverty-rate': 2, 'children-in-child-labour': 2, 'child-protection-system-maturity': 3, 'community-protective-index': 2, 
                     // Supply Chain Risk (Medium - 2.5)
-                    'child-labor-incident-rate': 2, 'farm-compliance-non-compliance': 3, 'to-what-extent-are-work-processes-manual': 4, 'to-what-extent-are-work-processes-low-skilled': 4, 'to-what-extent-are-work-processes-hazardous-under-national-law': 3, 'total-workforce': 4, 'to-what-extent-are-migrant-workers-part-of-the-workforce': 1, 'hrdd-maturity-readiness-assessment-suppliers': 3, 
+                    'child-labor-incident-rate': 2, 'farm-compliance-non-compliance': 3, 'to-what-extent-are-work-processes-manual': 4, 'to-what-extent-are-work-processes-low-skilled': 4, 'to-what-extent-are-work-processes-hazardous-under-national-law': 3, 'total-workforce': 4, 'to-what-extent-are-migrant-workers-part-of-the-workforce': 1, 
                     // Managed Risk (High - 3.0) - Good remediation systems
                     'remediation-case-resolution-rate': 1, 'remediation-school-reintegration': 1, 'audit-certification-performance': 1, 'hrdd-maturity-supplier': 1, 'farms-monitoring-remediation': 1, 
                     // Business Risk (High - 2.0) - Strategic importance
@@ -375,7 +374,6 @@
                     'to-what-extent-are-work-processes-hazardous-under-national-law': 'Some hazardous tasks present in coffee processing.',
                     'total-workforce': '~500k coffee households; >> 5,000 workers.',
                     'to-what-extent-are-migrant-workers-part-of-the-workforce': 'Some seasonal migration patterns.',
-                    'hrdd-maturity-readiness-assessment-suppliers': 'Moderate HRDD maturity with some gaps.',
                     'remediation-case-resolution-rate': 'Low resolution: ~30% of identified cases successfully resolved.',
                     'remediation-school-reintegration': 'Low reintegration: ~20% of child labor cases lead to school re-enrollment.',
                     'audit-certification-performance': 'Limited audit coverage and certification programs.',
@@ -400,7 +398,6 @@
                     'to-what-extent-are-work-processes-hazardous-under-national-law': 'Some hazardous tasks present.',
                     'total-workforce': 'Large workforce; >> 5,000 workers.',
                     'to-what-extent-are-migrant-workers-part-of-the-workforce': 'Seasonal migration NE→SE regions.',
-                    'hrdd-maturity-readiness-assessment-suppliers': 'Moderate HRDD; certifications/programs in places.',
                     'remediation-case-resolution-rate': 'Moderate resolution: ~60% of identified cases successfully resolved.',
                     'remediation-school-reintegration': 'Moderate reintegration: ~40% of child labor cases lead to school re-enrollment.',
                     'audit-certification-performance': 'Moderate performance: Certifications/programs in places.',
@@ -425,7 +422,6 @@
                     'to-what-extent-are-work-processes-hazardous-under-national-law': 'Some hazardous tasks present.',
                     'total-workforce': 'Large workforce; >> 5,000 workers.',
                     'to-what-extent-are-migrant-workers-part-of-the-workforce': 'Minimal migrant worker presence.',
-                    'hrdd-maturity-readiness-assessment-suppliers': 'Moderate HRDD maturity with ongoing improvements.',
                     'remediation-case-resolution-rate': 'High resolution: ~80% of identified cases successfully resolved.',
                     'remediation-school-reintegration': 'High reintegration: ~70% of child labor cases lead to school re-enrollment.',
                     'audit-certification-performance': 'Good performance: Strong audit coverage and certification programs.',
