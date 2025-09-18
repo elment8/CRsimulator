@@ -517,6 +517,13 @@
                 }
             };
 
+            // Country metadata
+            const countryMetadata = {
+                uganda: { name: 'Uganda', flag: '🇺🇬', description: 'High contextual and supply chain risks with limited remediation capacity' },
+                brazil: { name: 'Brazil', flag: '🇧🇷', description: 'Moderate risks with strategic business importance' },
+                indonesia: { name: 'Indonesia', flag: '🇮🇩', description: 'Low-medium risks with excellent managed risk performance' }
+            };
+
             // --- DOM ELEMENTS ---
             const containers = {
                 contextual: document.getElementById('contextual-risk-factors'),
@@ -562,6 +569,50 @@
                 for (const category in riskData) {
                     riskData[category].forEach(factor => containers[category].appendChild(createFormField(factor)));
                 }
+                
+                // Load country data after form is populated
+                loadCountryData();
+            }
+
+            // Load country data and apply preset
+            function loadCountryData() {
+                const countryId = localStorage.getItem('selectedCountry');
+                
+                if (!countryId || !countryPresets[countryId]) {
+                    // Redirect to leaderboard if no valid country selected
+                    window.location.href = 'leaderboard.html';
+                    return;
+                }
+
+                const presetData = countryPresets[countryId];
+                const metadata = countryMetadata[countryId];
+
+                // Update country info
+                document.getElementById('country-flag').textContent = metadata.flag;
+                document.getElementById('country-name').textContent = metadata.name;
+                document.getElementById('country-description').textContent = metadata.description;
+
+                // Apply preset values
+                for (const id in presetData) {
+                    const el = document.getElementById(id);
+                    const notesEl = document.getElementById(`${id}-notes`);
+                    const noteTextEl = notesEl?.querySelector('.preset-note-text');
+                    
+                    if (el) {
+                        el.value = presetData[id];
+                    }
+                    
+                    // Show preset note if available
+                    if (notesEl && noteTextEl && presetNotes[countryId] && presetNotes[countryId][id]) {
+                        noteTextEl.textContent = presetNotes[countryId][id];
+                        notesEl.classList.remove('hidden');
+                    } else if (notesEl) {
+                        notesEl.classList.add('hidden');
+                    }
+                }
+
+                // Calculate and update scores
+                calculateScores();
             }
 
             function calculateScores() {

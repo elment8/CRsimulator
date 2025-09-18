@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nescafé Child Rights Risk Prioritization Simulator</title>
+    <title>Nescafé Child Rights Risk Prioritization Simulator - Uganda</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Maven+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -114,26 +114,28 @@
                 <div class="flex-1 text-center">
                     <h1 class="text-3xl md:text-4xl font-bold text-slate-900" style="font-family: 'Maven Pro', sans-serif;">Nescafé Child Rights Risk Prioritization Simulator</h1>
                     <p class="mt-2 text-slate-600">Assess and visualize child rights risks within supply chains</p>
+                    
+                    <!-- Country Header -->
+                    <div class="mt-4 bg-white rounded-lg border border-slate-200 p-4 max-w-md mx-auto">
+                        <div class="text-center">
+                            <div class="text-4xl mb-2">🇺🇬</div>
+                            <h2 class="text-xl font-bold text-slate-900 mb-1">Uganda</h2>
+                            <p class="text-sm text-slate-600">High contextual and supply chain risks with limited remediation capacity</p>
+                        </div>
+                    </div>
                 </div>
                 
                 
             </div>
 
-            <!-- Preset Selector and Navigation -->
+            <!-- Navigation -->
             <div class="max-w-md mx-auto">
-                <label for="country-preset" class="block text-sm font-medium text-slate-700 mb-2">Load Country Example:</label>
-                <select id="country-preset" class="w-full bg-white border border-slate-300 rounded-md shadow-sm p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                    <option value="custom">-- Select a preset --</option>
-                    <option value="uganda">Uganda</option>
-                    <option value="brazil">Brazil</option>
-                    <option value="indonesia">Indonesia</option>
-                </select>
-                <div class="mt-4 text-center">
-                    <a href="leaderboard.html" class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                <div class="text-center">
+                    <a href="leaderboard.html" class="inline-flex items-center px-4 py-2 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition-colors">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                         </svg>
-                        View Country Leaderboard
+                        Back to Leaderboard
                     </a>
                 </div>
             </div>
@@ -562,6 +564,35 @@
                 for (const category in riskData) {
                     riskData[category].forEach(factor => containers[category].appendChild(createFormField(factor)));
                 }
+                
+                // Automatically load Uganda's preset data
+                loadUgandaPreset();
+            }
+            
+            function loadUgandaPreset() {
+                const presetData = countryPresets.uganda;
+                
+                // Apply preset values
+                for (const id in presetData) {
+                    const el = document.getElementById(id);
+                    const notesEl = document.getElementById(`${id}-notes`);
+                    const noteTextEl = notesEl?.querySelector('.preset-note-text');
+                    
+                    if (el) {
+                        el.value = presetData[id];
+                    }
+                    
+                    // Show preset note if available
+                    if (notesEl && noteTextEl && presetNotes.uganda && presetNotes.uganda[id]) {
+                        noteTextEl.textContent = presetNotes.uganda[id];
+                        notesEl.classList.remove('hidden');
+                    } else if (notesEl) {
+                        notesEl.classList.add('hidden');
+                    }
+                }
+                
+                // Calculate scores after loading preset
+                calculateScores();
             }
 
             function calculateScores() {

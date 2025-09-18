@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nescafé Child Rights Risk Prioritization - Country Leaderboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Maven+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Maven Pro', sans-serif;
+        }
+        .country-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        .country-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6, #06b6d4);
+        }
+        .country-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        .country-card:hover::before {
+            height: 6px;
+        }
+        .priority-badge {
+            font-weight: 700;
+            font-size: 0.875rem;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            position: relative;
+            overflow: hidden;
+        }
+        .priority-badge::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        .priority-badge:hover::before {
+            left: 100%;
+        }
+        .priority-1 { background: linear-gradient(135deg, #dc2626, #ef4444); color: white; }
+        .priority-2 { background: linear-gradient(135deg, #ea580c, #f97316); color: white; }
+        .priority-3 { background: linear-gradient(135deg, #d97706, #f59e0b); color: white; }
+        .priority-4 { background: linear-gradient(135deg, #ca8a04, #eab308); color: white; }
+        .priority-5 { background: linear-gradient(135deg, #65a30d, #84cc16); color: white; }
+        .priority-6 { background: linear-gradient(135deg, #16a34a, #22c55e); color: white; }
+        .priority-7 { background: linear-gradient(135deg, #059669, #10b981); color: white; }
+        .priority-8 { background: linear-gradient(135deg, #0d9488, #14b8a6); color: white; }
+        
+        .risk-level-badge {
+            font-weight: 600;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.5rem;
+            border: 1px solid;
+        }
+        .risk-very-high { background-color: #fef2f2; color: #991b1b; border-color: #fecaca; }
+        .risk-high { background-color: #fffbeb; color: #9a3412; border-color: #fed7aa; }
+        .risk-medium { background-color: #fefce8; color: #92400e; border-color: #fef3c7; }
+        .risk-low { background-color: #f0fdf4; color: #065f46; border-color: #d1fae5; }
+        
+        .business-high { background-color: #fefce8; color: #92400e; border-color: #fef3c7; }
+        .business-low { background-color: #f0fdf4; color: #065f46; border-color: #d1fae5; }
+        
+        .score-bar {
+            height: 6px;
+            border-radius: 3px;
+            overflow: hidden;
+            background-color: #e2e8f0;
+        }
+        .score-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.8s ease;
+        }
+        .score-inherent { background: linear-gradient(90deg, #ef4444, #f87171); }
+        .score-managed { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+        .score-business { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+        
+        .country-flag {
+            font-size: 2.5rem;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        }
+        
+        .metric-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .metric-item:last-child {
+            border-bottom: none;
+        }
+        
+        .key-issue-tag {
+            background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+            color: #475569;
+            border: 1px solid #cbd5e1;
+            transition: all 0.2s ease;
+        }
+        .key-issue-tag:hover {
+            background: linear-gradient(135deg, #e2e8f0, #cbd5e1);
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+    <div class="container mx-auto p-4 md:p-8">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-slate-900 mb-2">Country Risk Prioritization Leaderboard</h1>
+            <p class="text-slate-600">Child Rights Risk Assessment Rankings</p>
+        </div>
+
+        <!-- Country Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8" id="country-cards">
+            <!-- Cards will be populated by JavaScript -->
+        </div>
+
+        <!-- Legend Trigger -->
+        <div class="flex justify-center">
+            <div class="legend-trigger relative inline-flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 rounded-lg cursor-pointer transition-colors">
+                <svg class="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <span class="text-slate-700 font-medium">Legend</span>
+            </div>
+        </div>
+
+        <!-- Legend Modal -->
+        <div id="legend-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+            <div class="bg-white rounded-2xl shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-y-auto">
+                <div class="sticky top-0 bg-white border-b border-slate-200 p-6 rounded-t-2xl">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h2 class="text-2xl font-bold text-slate-900">Priority Levels</h2>
+                            <p class="text-slate-600">Risk assessment prioritization matrix</p>
+                        </div>
+                        <button id="close-legend" class="text-slate-400 hover:text-slate-600 transition-colors">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <!-- Priority 1 -->
+                        <div class="group bg-slate-50 rounded-xl p-4 border border-slate-200 hover:shadow-md transition-all duration-300 hover:-translate-y-1">
+                            <div class="flex items-center gap-3 mb-3">
+                                <span class="priority-badge priority-1 text-lg">1</span>
+                                <div class="flex-1">
+                                    <div class="font-semibold text-slate-900">Critical</div>
+                                    <div class="text-xs text-slate-500">Highest Priority</div>
+                                </div>
+                            </div>
+                            <div class="space-y-1">
+                                <div class="flex items-center gap-2 text-sm">
+                                    <div class="w-2 h-2 bg-red-500 rounded-full"></div>
+                                    <span class="text-slate-700">Very High Risk</span>
+                                </div>
+                                <div class="flex items-center gap-2 text-sm">
+                                    <div class="w-2 h-2 bg-amber-500 rounded-full"></div>
+                                    <span class="text-slate-700">High Business</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Priority 2 -->
+                        <div class="group bg-slate-50 rounded-xl p-4 border border-slate-200 hover:shadow-md transition-all duration-300 hover:-translate-y-1">
+                            <div class="flex items-center gap-3 mb-3">
+                                <span class="priority-badge priority-2 text-lg">2</span>
+                                <div class="flex-1">
+                                    <div class="font-semibold text-slate-900">Urgent</div>
+                                    <div class="text-xs text-slate-500">High Priority</div>
+                                </div>
+                            </div>
+                            <div class="space-y-1">
+                                <div class="flex items-center gap-2 text-sm">
+                                    <div class="w-2 h-2 bg-red-500 rounded-full"></div>
+                                    <span class="text-slate-700">Very High Risk</span>
+                                </div>
+                                <div class="flex items-center gap-2 text-sm">
+                                    <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                                    <span class="text-slate-700">Low Business</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Priority 3 -->
+                        <div class="group bg-slate-50 rounded-xl p-4 border border-slate-200 hover:shadow-md transition-all duration-300 hover:-translate-y-1">
+                            <div class="flex items-center gap-3 mb-3">
+                                <span class="priority-badge priority-3 text-lg">3</span>
+                                <div class="flex-1">
+                                    <div class="font-semibold text-slate-900">High</div>
+                                    <div class="text-xs text-slate-500">Important</div>
+                                </div>
+                            </div>
+                            <div class="space-y-1">
+                                <div class="flex items-center gap-2 text-sm">
+                                    <div class="w-2 h-2 bg-orange-500 rounded-full"></div>
+                                    <span class="text-slate-700">High Risk</span>
+                                </div>
+                                <div class="flex items-center gap-2 text-sm">
+                                    <div class="w-2 h-2 bg-amber-500 rounded-full"></div>
+                                    <span class="text-slate-700">High Business</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Priority 4 -->
+                        <div class="group bg-slate-50 rounded-xl p-4 border border-slate-200 hover:shadow-md transition-all duration-300 hover:-translate-y-1">
+                            <div class="flex items-center gap-3 mb-3">
+                                <span class="priority-badge priority-4 text-lg">4</span>
+                                <div class="flex-1">
+                                    <div class="font-semibold text-slate-900">Moderate</div>
+                                    <div class="text-xs text-slate-500">Medium Priority</div>
+                                </div>
+                            </div>
+                            <div class="space-y-1">
+                                <div class="flex items-center gap-2 text-sm">
+                                    <div class="w-2 h-2 bg-orange-500 rounded-full"></div>
+                                    <span class="text-slate-700">High Risk</span>
+                                </div>
+                                <div class="flex items-center gap-2 text-sm">
+                                    <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                                    <span class="text-slate-700">Low Business</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Priority 5 -->
+                        <div class="group bg-slate-50 rounded-xl p-4 border border-slate-200 hover:shadow-md transition-all duration-300 hover:-translate-y-1">
+                            <div class="flex items-center gap-3 mb-3">
+                                <span class="priority-badge priority-5 text-lg">5</span>
+                                <div class="flex-1">
+                                    <div class="font-semibold text-slate-900">Medium</div>
+                                    <div class="text-xs text-slate-500">Standard</div>
+                                </div>
+                            </div>
+                            <div class="space-y-1">
+                                <div class="flex items-center gap-2 text-sm">
+                                    <div class="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                                    <span class="text-slate-700">Medium Risk</span>
+                                </div>
+                                <div class="flex items-center gap-2 text-sm">
+                                    <div class="w-2 h-2 bg-amber-500 rounded-full"></div>
+                                    <span class="text-slate-700">High Business</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Priority 6 -->
+                        <div class="group bg-slate-50 rounded-xl p-4 border border-slate-200 hover:shadow-md transition-all duration-300 hover:-translate-y-1">
+                            <div class="flex items-center gap-3 mb-3">
+                                <span class="priority-badge priority-6 text-lg">6</span>
+                                <div class="flex-1">
+                                    <div class="font-semibold text-slate-900">Low-Medium</div>
+                                    <div class="text-xs text-slate-500">Lower Priority</div>
+                                </div>
+                            </div>
+                            <div class="space-y-1">
+                                <div class="flex items-center gap-2 text-sm">
+                                    <div class="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                                    <span class="text-slate-700">Medium Risk</span>
+                                </div>
+                                <div class="flex items-center gap-2 text-sm">
+                                    <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                                    <span class="text-slate-700">Low Business</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Priority 7 -->
+                        <div class="group bg-slate-50 rounded-xl p-4 border border-slate-200 hover:shadow-md transition-all duration-300 hover:-translate-y-1">
+                            <div class="flex items-center gap-3 mb-3">
+                                <span class="priority-badge priority-7 text-lg">7</span>
+                                <div class="flex-1">
+                                    <div class="font-semibold text-slate-900">Low</div>
+                                    <div class="text-xs text-slate-500">Minimal Priority</div>
+                                </div>
+                            </div>
+                            <div class="space-y-1">
+                                <div class="flex items-center gap-2 text-sm">
+                                    <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                                    <span class="text-slate-700">Low Risk</span>
+                                </div>
+                                <div class="flex items-center gap-2 text-sm">
+                                    <div class="w-2 h-2 bg-amber-500 rounded-full"></div>
+                                    <span class="text-slate-700">High Business</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Priority 8 -->
+                        <div class="group bg-slate-50 rounded-xl p-4 border border-slate-200 hover:shadow-md transition-all duration-300 hover:-translate-y-1">
+                            <div class="flex items-center gap-3 mb-3">
+                                <span class="priority-badge priority-8 text-lg">8</span>
+                                <div class="flex-1">
+                                    <div class="font-semibold text-slate-900">Minimal</div>
+                                    <div class="text-xs text-slate-500">Lowest Priority</div>
+                                </div>
+                            </div>
+                            <div class="space-y-1">
+                                <div class="flex items-center gap-2 text-sm">
+                                    <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                                    <span class="text-slate-700">Low Risk</span>
+                                </div>
+                                <div class="flex items-center gap-2 text-sm">
+                                    <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                                    <span class="text-slate-700">Low Business</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Risk data structure (same as main simulator)
+        const riskData = {
+            contextual: [
+                { id: 'lower-secondary-school-completion-rate', weight: 0.20 },
+                { id: 'poverty-rate', weight: 0.20 },
+                { id: 'children-in-child-labour', weight: 0.20 },
+                { id: 'child-protection-system-maturity', weight: 0.20 },
+                { id: 'community-protective-index', weight: 0.20 }
+            ],
+            supply: [
+                { id: 'child-labor-incident-rate', weight: 0.25 },
+                { id: 'farm-compliance-non-compliance', weight: 0.15 },
+                { id: 'to-what-extent-are-work-processes-manual', weight: 0.10 },
+                { id: 'to-what-extent-are-work-processes-low-skilled', weight: 0.10 },
+                { id: 'to-what-extent-are-work-processes-hazardous-under-national-law', weight: 0.10 },
+                { id: 'total-workforce', weight: 0.10 },
+                { id: 'to-what-extent-are-migrant-workers-part-of-the-workforce', weight: 0.20 }
+            ],
+            managed: [
+                { id: 'remediation-case-resolution-rate', weight: 0.30 },
+                { id: 'remediation-school-reintegration', weight: 0.15 },
+                { id: 'audit-certification-performance', weight: 0.20 },
+                { id: 'hrdd-maturity-supplier', weight: 0.20 },
+                { id: 'farms-monitoring-remediation', weight: 0.15 }
+            ],
+            businessRisk: [
+                { id: 'volume-no-of-farms', weight: 0.70 },
+                { id: 'farmer-connect-units', weight: 0.10 },
+                { id: 'nestle-other-commodity-sourcing', weight: 0.10 },
+                { id: 'strategic-importance', weight: 0.10 }
+            ]
+        };
+
+        // Country presets (same as main simulator)
+        const countryPresets = {
+            uganda: { 
+                // Contextual Risk (High - 4.0)
+                'lower-secondary-school-completion-rate': 4, 'poverty-rate': 4, 'children-in-child-labour': 4, 'child-protection-system-maturity': 4, 'community-protective-index': 4, 
+                // Supply Chain Risk (High - 3.5)
+                'child-labor-incident-rate': 4, 'farm-compliance-non-compliance': 3, 'to-what-extent-are-work-processes-manual': 4, 'to-what-extent-are-work-processes-low-skilled': 4, 'to-what-extent-are-work-processes-hazardous-under-national-law': 3, 'total-workforce': 4, 'to-what-extent-are-migrant-workers-part-of-the-workforce': 2, 
+                // Managed Risk (High - 4.0) - Limited remediation capacity
+                'remediation-case-resolution-rate': 4, 'remediation-school-reintegration': 4, 'audit-certification-performance': 4, 'hrdd-maturity-supplier': 4, 'farms-monitoring-remediation': 4, 
+                // Business Risk (Low - 1.0) - Not strategic
+                'volume-no-of-farms': 1, 'farmer-connect-units': 1, 'nestle-other-commodity-sourcing': 1, 'strategic-importance': 1, 
+                // Severity Modifier (High - 4.0)
+                'average-hours-worked-child-labor-severity': 4 
+            },
+            brazil: { 
+                // Contextual Risk (Medium - 2.2)
+                'lower-secondary-school-completion-rate': 2, 'poverty-rate': 2, 'children-in-child-labour': 3, 'child-protection-system-maturity': 2, 'community-protective-index': 2, 
+                // Supply Chain Risk (Medium-High - 3.0)
+                'child-labor-incident-rate': 3, 'farm-compliance-non-compliance': 2, 'to-what-extent-are-work-processes-manual': 4, 'to-what-extent-are-work-processes-low-skilled': 3, 'to-what-extent-are-work-processes-hazardous-under-national-law': 3, 'total-workforce': 4, 'to-what-extent-are-migrant-workers-part-of-the-workforce': 2, 
+                // Managed Risk (Medium - 2.0) - Moderate remediation
+                'remediation-case-resolution-rate': 2, 'remediation-school-reintegration': 2, 'audit-certification-performance': 2, 'hrdd-maturity-supplier': 2, 'farms-monitoring-remediation': 2, 
+                // Business Risk (High - 2.0) - Strategic importance
+                'volume-no-of-farms': 2, 'farmer-connect-units': 2, 'nestle-other-commodity-sourcing': 2, 'strategic-importance': 2, 
+                // Severity Modifier (Medium - 2.0)
+                'average-hours-worked-child-labor-severity': 2 
+            },
+            indonesia: { 
+                // Contextual Risk (Low-Medium - 2.2)
+                'lower-secondary-school-completion-rate': 2, 'poverty-rate': 2, 'children-in-child-labour': 2, 'child-protection-system-maturity': 3, 'community-protective-index': 2, 
+                // Supply Chain Risk (Medium - 2.5)
+                'child-labor-incident-rate': 2, 'farm-compliance-non-compliance': 3, 'to-what-extent-are-work-processes-manual': 4, 'to-what-extent-are-work-processes-low-skilled': 4, 'to-what-extent-are-work-processes-hazardous-under-national-law': 3, 'total-workforce': 4, 'to-what-extent-are-migrant-workers-part-of-the-workforce': 1, 
+                // Managed Risk (Low - 1.0) - Good remediation systems
+                'remediation-case-resolution-rate': 1, 'remediation-school-reintegration': 1, 'audit-certification-performance': 1, 'hrdd-maturity-supplier': 1, 'farms-monitoring-remediation': 1, 
+                // Business Risk (High - 2.0) - Strategic importance
+                'volume-no-of-farms': 2, 'farmer-connect-units': 2, 'nestle-other-commodity-sourcing': 2, 'strategic-importance': 2, 
+                // Severity Modifier (Low - 1.0)
+                'average-hours-worked-child-labor-severity': 1 
+            }
+        };
+
+        // Country metadata
+        const countryMetadata = {
+            uganda: { name: 'Uganda', flag: '🇺🇬', description: 'High contextual and supply chain risks with limited remediation capacity' },
+            brazil: { name: 'Brazil', flag: '🇧🇷', description: 'Moderate risks with strategic business importance' },
+            indonesia: { name: 'Indonesia', flag: '🇮🇩', description: 'Low-medium risks with excellent managed risk performance' }
+        };
+
+        // Calculate scores from preset data
+        function calculateScores(presetData) {
+            const scores = { contextual: 0, supply: 0, managed: 0, businessRisk: 0, severityModifier: 0 };
+            
+            // Calculate contextual risk
+            riskData.contextual.forEach(factor => {
+                scores.contextual += (presetData[factor.id] || 0) * factor.weight;
+            });
+            
+            // Calculate supply chain risk
+            riskData.supply.forEach(factor => {
+                scores.supply += (presetData[factor.id] || 0) * factor.weight;
+            });
+            
+            // Calculate managed risk
+            riskData.managed.forEach(factor => {
+                scores.managed += (presetData[factor.id] || 0) * factor.weight;
+            });
+            
+            // Calculate business risk
+            riskData.businessRisk.forEach(factor => {
+                scores.businessRisk += (presetData[factor.id] || 0) * factor.weight;
+            });
+            
+            // Severity modifier
+            scores.severityModifier = presetData['average-hours-worked-child-labor-severity'] || 0;
+            
+            return scores;
+        }
+
+        // Determine risk level and priority
+        function getRiskLevelAndPriority(scores) {
+            const inherentScore = scores.contextual * 0.15 + scores.supply * 0.25;
+            const managedScore = scores.managed;
+            const businessScore = scores.businessRisk;
+            
+            // Determine risk level based on matrix
+            let riskLevel;
+            if (inherentScore <= 1.5 && managedScore <= 1.5) riskLevel = 'Low';
+            else if (inherentScore <= 2.5 && managedScore <= 2.5) riskLevel = 'Medium';
+            else if (inherentScore <= 3.5 && managedScore <= 3.5) riskLevel = 'High';
+            else riskLevel = 'Very High';
+            
+            // Determine business importance
+            const businessImportance = businessScore >= 1.5 ? 'High' : 'Low';
+            
+            // Determine priority (1-8)
+            let priority;
+            if (riskLevel === 'Very High' && businessImportance === 'High') priority = 1;
+            else if (riskLevel === 'Very High' && businessImportance === 'Low') priority = 2;
+            else if (riskLevel === 'High' && businessImportance === 'High') priority = 3;
+            else if (riskLevel === 'High' && businessImportance === 'Low') priority = 4;
+            else if (riskLevel === 'Medium' && businessImportance === 'High') priority = 5;
+            else if (riskLevel === 'Medium' && businessImportance === 'Low') priority = 6;
+            else if (riskLevel === 'Low' && businessImportance === 'High') priority = 7;
+            else priority = 8;
+            
+            return { riskLevel, businessImportance, priority, inherentScore, managedScore, businessScore };
+        }
+
+        function createCountryCard(countryId, presetData, metadata, leaderboardPosition) {
+            const scores = calculateScores(presetData);
+            const { riskLevel, businessImportance, priority, inherentScore, managedScore, businessScore } = getRiskLevelAndPriority(scores);
+            
+            const priorityClass = `priority-${priority}`;
+            const riskClass = `risk-${riskLevel.toLowerCase().replace(' ', '-')}`;
+            const businessClass = businessImportance === 'High' ? 'business-high' : 'business-low';
+
+            // Key issues based on scores
+            const keyIssues = [];
+            if (scores.contextual >= 3) keyIssues.push('High contextual risks');
+            if (scores.supply >= 3) keyIssues.push('Supply chain challenges');
+            if (scores.managed >= 3) keyIssues.push('Limited remediation capacity');
+            if (scores.businessRisk < 1.5) keyIssues.push('Limited business importance');
+            if (scores.severityModifier >= 3) keyIssues.push('High severity cases');
+
+            return `
+                <div class="country-card bg-white rounded-xl shadow-lg p-6" onclick="navigateToDetails('${countryId}')">
+                    <!-- Header -->
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="flex items-center gap-4">
+                            <span class="country-flag">${metadata.flag}</span>
+                            <div>
+                                <h3 class="text-xl font-bold text-slate-900">${metadata.name}</h3>
+                                <p class="text-sm text-slate-500">Priority ${priority}</p>
+                            </div>
+                        </div>
+                        <span class="priority-badge ${priorityClass}">#${leaderboardPosition}</span>
+                    </div>
+                    
+                    <!-- Risk Level & Business Importance -->
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div class="text-center p-3 bg-slate-50 rounded-lg">
+                            <div class="text-xs text-slate-600 mb-1">Risk Level</div>
+                            <span class="risk-level-badge ${riskClass}">${riskLevel}</span>
+                        </div>
+                        <div class="text-center p-3 bg-slate-50 rounded-lg">
+                            <div class="text-xs text-slate-600 mb-1">Business Importance</div>
+                            <span class="risk-level-badge ${businessClass}">${businessImportance}</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Score Bars -->
+                    <div class="space-y-4 mb-6">
+                        <div class="metric-item">
+                            <span class="text-sm font-medium text-slate-700">Inherent Risk</span>
+                            <div class="flex items-center gap-2">
+                                <span class="text-sm font-bold text-slate-900">${inherentScore.toFixed(1)}</span>
+                                <div class="score-bar w-20">
+                                    <div class="score-fill score-inherent" style="width: ${(inherentScore / 4) * 100}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="metric-item">
+                            <span class="text-sm font-medium text-slate-700">Managed Risk</span>
+                            <div class="flex items-center gap-2">
+                                <span class="text-sm font-bold text-slate-900">${managedScore.toFixed(1)}</span>
+                                <div class="score-bar w-20">
+                                    <div class="score-fill score-managed" style="width: ${(managedScore / 4) * 100}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="metric-item">
+                            <span class="text-sm font-medium text-slate-700">Business Score</span>
+                            <div class="flex items-center gap-2">
+                                <span class="text-sm font-bold text-slate-900">${businessScore.toFixed(1)}</span>
+                                <div class="score-bar w-20">
+                                    <div class="score-fill score-business" style="width: ${(businessScore / 2) * 100}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Action -->
+                    <div class="text-center pt-2 border-t border-slate-100">
+                        <span class="text-sm text-blue-600 font-medium flex items-center justify-center gap-2">
+                            View detailed analysis
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function populateCountryCards() {
+            const container = document.getElementById('country-cards');
+            
+            // Create country data from presets
+            const countries = Object.keys(countryPresets).map(countryId => {
+                const presetData = countryPresets[countryId];
+                const metadata = countryMetadata[countryId];
+                const scores = calculateScores(presetData);
+                const { riskLevel, businessImportance, priority } = getRiskLevelAndPriority(scores);
+                
+                return {
+                    id: countryId,
+                    presetData,
+                    metadata,
+                    priority,
+                    riskLevel,
+                    businessImportance
+                };
+            });
+            
+            // Sort by priority
+            countries.sort((a, b) => a.priority - b.priority);
+            
+            // Generate cards with leaderboard positions
+            container.innerHTML = countries.map((country, index) => 
+                createCountryCard(country.id, country.presetData, country.metadata, index + 1)
+            ).join('');
+        }
+
+        function navigateToDetails(countryId) {
+            // Navigate to the specific country page
+            window.location.href = `${countryId}.html`;
+        }
+
+        // Legend modal functionality
+        function initLegendModal() {
+            const legendTrigger = document.querySelector('.legend-trigger');
+            const legendModal = document.getElementById('legend-modal');
+            const closeLegend = document.getElementById('close-legend');
+
+            // Open modal
+            legendTrigger.addEventListener('click', function() {
+                legendModal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden'; // Prevent background scrolling
+            });
+
+            // Close modal
+            closeLegend.addEventListener('click', function() {
+                legendModal.classList.add('hidden');
+                document.body.style.overflow = 'auto'; // Restore scrolling
+            });
+
+            // Close modal when clicking outside
+            legendModal.addEventListener('click', function(e) {
+                if (e.target === legendModal) {
+                    legendModal.classList.add('hidden');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+
+            // Close modal with Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && !legendModal.classList.contains('hidden')) {
+                    legendModal.classList.add('hidden');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+        }
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            populateCountryCards();
+            initLegendModal();
+        });
+    </script>
+</body>
+</html>
