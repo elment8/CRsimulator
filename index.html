@@ -267,15 +267,17 @@
                     { id: 'hrdd-maturity-readiness-assessment-suppliers', label: 'HRDD maturity readiness assessment suppliers', weight: 0.10, tooltip: 'Human Rights Due Diligence maturity and readiness of suppliers.', options: [{ text: 'Low risk', rating: 1 }, { text: 'Medium risk', rating: 2 }, { text: 'High risk', rating: 3 }, { text: 'Very high risk', rating: 4 }] },
                 ],
                 managed: [
-                    { id: 'remediation-case-resolution-rate', label: 'Remediation (Case Resolution Rate)', weight: 0.50, tooltip: 'Proportion of child cases resolved with successful outcomes.', options: [{ text: '81-100% resolved', rating: 1 }, { text: '61-80% resolved', rating: 2 }, { text: '41-60% resolved', rating: 3 }, { text: '0-40% resolved', rating: 4 }] },
-                    { id: 'remediation-school-reintegration', label: 'Remediation (School Reintegration)', weight: 0.17, tooltip: 'Proportion of child labor cases leading to school re-enrollment.', options: [{ text: '61-100% reintegrated', rating: 1 }, { text: '41-60% reintegrated', rating: 2 }, { text: '21-40% reintegrated', rating: 3 }, { text: '0-20% reintegrated', rating: 4 }] },
-                    { id: 'audit-certification-performance', label: 'Audit/Certification Performance', weight: 0.33, tooltip: 'Audit or certification results score for the site.', options: [{ text: 'Compliance A-B', rating: 1 }, { text: 'Compliance C', rating: 2 }, { text: 'Compliance D', rating: 3 }, { text: 'Compliance F / Not audited 2y', rating: 4 }] },
+                    { id: 'remediation-case-resolution-rate', label: 'Remediation (Case Resolution Rate)', weight: 0.30, tooltip: 'Proportion of child cases resolved with successful outcomes.', options: [{ text: '81-100% resolved', rating: 1 }, { text: '61-80% resolved', rating: 2 }, { text: '41-60% resolved', rating: 3 }, { text: '0-40% resolved', rating: 4 }] },
+                    { id: 'remediation-school-reintegration', label: 'Remediation (School Reintegration)', weight: 0.15, tooltip: 'Proportion of child labor cases leading to school re-enrollment.', options: [{ text: '61-100% reintegrated', rating: 1 }, { text: '41-60% reintegrated', rating: 2 }, { text: '21-40% reintegrated', rating: 3 }, { text: '0-20% reintegrated', rating: 4 }] },
+                    { id: 'audit-certification-performance', label: 'Audit/Certification Performance', weight: 0.20, tooltip: 'Audit or certification results score for the site.', options: [{ text: 'Compliance A-B', rating: 1 }, { text: 'Compliance C', rating: 2 }, { text: 'Compliance D', rating: 3 }, { text: 'Compliance F / Not audited 2y', rating: 4 }] },
+                    { id: 'hrdd-maturity-supplier', label: 'HRDD Maturity of the Supplier', weight: 0.20, tooltip: 'Human Rights Due Diligence maturity and readiness of the supplier.', options: [{ text: 'High maturity', rating: 1 }, { text: 'Medium maturity', rating: 2 }, { text: 'Low maturity', rating: 3 }, { text: 'Very low maturity', rating: 4 }] },
+                    { id: 'farms-monitoring-remediation', label: 'No. of farms covered by monitoring and remediation systems', weight: 0.15, tooltip: 'Percentage of farms covered by monitoring and remediation systems.', options: [{ text: '81-100% covered', rating: 1 }, { text: '61-80% covered', rating: 2 }, { text: '41-60% covered', rating: 3 }, { text: '0-40% covered', rating: 4 }] },
                 ],
                 businessRisk: [
-                    { id: 'volume-no-of-farms', label: 'Volume / No. of farms', weight: 0.25, tooltip: 'Whether the site represents significant volume or number of farms.', options: [{ text: 'No', rating: 1 }, { text: 'Yes', rating: 2 }] },
-                    { id: 'farmer-connect-units', label: 'Farmer Connect Units', weight: 0.25, tooltip: 'Whether the site has Farmer Connect units.', options: [{ text: 'No', rating: 1 }, { text: 'Yes', rating: 2 }] },
-                    { id: 'nestle-other-commodity-sourcing', label: 'Nestlé other commodity sourcing', weight: 0.25, tooltip: 'Whether Nestlé sources other commodities from this site.', options: [{ text: 'No', rating: 1 }, { text: 'Yes', rating: 2 }] },
-                    { id: 'strategic-importance', label: 'Strategic importance', weight: 0.25, tooltip: 'Whether the site has strategic importance for the business.', options: [{ text: 'No', rating: 1 }, { text: 'Yes', rating: 2 }] },
+                    { id: 'volume-no-of-farms', label: 'Volume / No. of farms', weight: 0.70, tooltip: 'Whether the site represents significant volume or number of farms.', options: [{ text: 'No', rating: 1 }, { text: 'Yes', rating: 2 }] },
+                    { id: 'farmer-connect-units', label: 'Farmer Connect Units', weight: 0.10, tooltip: 'Whether the site has Farmer Connect units.', options: [{ text: 'No', rating: 1 }, { text: 'Yes', rating: 2 }] },
+                    { id: 'nestle-other-commodity-sourcing', label: 'Nestlé other commodity sourcing', weight: 0.10, tooltip: 'Whether Nestlé sources other commodities from this site.', options: [{ text: 'No', rating: 1 }, { text: 'Yes', rating: 2 }] },
+                    { id: 'strategic-importance', label: 'Strategic importance', weight: 0.10, tooltip: 'Whether the site has strategic importance for the business.', options: [{ text: 'No', rating: 1 }, { text: 'Yes', rating: 2 }] },
                 ],
                 severityModifier: [
                     { id: 'average-hours-worked-child-labor-severity', label: 'Average Hours Worked (Child Labor Severity)', weight: 1.0, tooltip: 'Average hours worked by children in child labor situations.', options: [{ text: '0-1 hours', rating: 1 }, { text: '1-2 hours', rating: 2 }, { text: '2-4 hours', rating: 3 }, { text: '4+ hours', rating: 4 }] }
@@ -289,7 +291,7 @@
                     // Supply Chain Risk (High - 3.5)
                     'child-labor-incident-rate': 4, 'farm-compliance-non-compliance': 3, 'to-what-extent-are-work-processes-manual': 4, 'to-what-extent-are-work-processes-low-skilled': 4, 'to-what-extent-are-work-processes-hazardous-under-national-law': 3, 'total-workforce': 4, 'to-what-extent-are-migrant-workers-part-of-the-workforce': 2, 'hrdd-maturity-readiness-assessment-suppliers': 3, 
                     // Managed Risk (Low - 1.0) - Limited remediation capacity
-                    'remediation-case-resolution-rate': 4, 'remediation-school-reintegration': 4, 'audit-certification-performance': 4, 
+                    'remediation-case-resolution-rate': 4, 'remediation-school-reintegration': 4, 'audit-certification-performance': 4, 'hrdd-maturity-supplier': 4, 'farms-monitoring-remediation': 4, 
                     // Business Risk (Low - 1.0) - Not strategic
                     'volume-no-of-farms': 1, 'farmer-connect-units': 1, 'nestle-other-commodity-sourcing': 1, 'strategic-importance': 1, 
                     // Severity Modifier (High - 4.0)
@@ -301,7 +303,7 @@
                     // Supply Chain Risk (Medium-High - 3.0)
                     'child-labor-incident-rate': 3, 'farm-compliance-non-compliance': 2, 'to-what-extent-are-work-processes-manual': 4, 'to-what-extent-are-work-processes-low-skilled': 3, 'to-what-extent-are-work-processes-hazardous-under-national-law': 3, 'total-workforce': 4, 'to-what-extent-are-migrant-workers-part-of-the-workforce': 2, 'hrdd-maturity-readiness-assessment-suppliers': 2, 
                     // Managed Risk (Medium - 2.0) - Moderate remediation
-                    'remediation-case-resolution-rate': 2, 'remediation-school-reintegration': 2, 'audit-certification-performance': 2, 
+                    'remediation-case-resolution-rate': 2, 'remediation-school-reintegration': 2, 'audit-certification-performance': 2, 'hrdd-maturity-supplier': 2, 'farms-monitoring-remediation': 2, 
                     // Business Risk (High - 2.0) - Strategic importance
                     'volume-no-of-farms': 2, 'farmer-connect-units': 2, 'nestle-other-commodity-sourcing': 2, 'strategic-importance': 2, 
                     // Severity Modifier (Medium - 2.0)
@@ -313,7 +315,7 @@
                     // Supply Chain Risk (Medium - 2.5)
                     'child-labor-incident-rate': 2, 'farm-compliance-non-compliance': 3, 'to-what-extent-are-work-processes-manual': 4, 'to-what-extent-are-work-processes-low-skilled': 4, 'to-what-extent-are-work-processes-hazardous-under-national-law': 3, 'total-workforce': 4, 'to-what-extent-are-migrant-workers-part-of-the-workforce': 1, 'hrdd-maturity-readiness-assessment-suppliers': 3, 
                     // Managed Risk (High - 3.0) - Good remediation systems
-                    'remediation-case-resolution-rate': 1, 'remediation-school-reintegration': 1, 'audit-certification-performance': 1, 
+                    'remediation-case-resolution-rate': 1, 'remediation-school-reintegration': 1, 'audit-certification-performance': 1, 'hrdd-maturity-supplier': 1, 'farms-monitoring-remediation': 1, 
                     // Business Risk (High - 2.0) - Strategic importance
                     'volume-no-of-farms': 2, 'farmer-connect-units': 2, 'nestle-other-commodity-sourcing': 2, 'strategic-importance': 2, 
                     // Severity Modifier (Low - 1.0)
@@ -340,6 +342,8 @@
                     'remediation-case-resolution-rate': 'Low resolution: ~30% of identified cases successfully resolved.',
                     'remediation-school-reintegration': 'Low reintegration: ~20% of child labor cases lead to school re-enrollment.',
                     'audit-certification-performance': 'Limited audit coverage and certification programs.',
+                    'hrdd-maturity-supplier': 'Very low HRDD maturity with significant gaps in supplier readiness.',
+                    'farms-monitoring-remediation': 'Low coverage: ~25% of farms covered by monitoring and remediation systems.',
                     'volume-no-of-farms': 'Not a major volume source for Nestlé.',
                     'farmer-connect-units': 'No Farmer Connect units present.',
                     'nestle-other-commodity-sourcing': 'No other commodity sourcing from this region.',
@@ -363,6 +367,8 @@
                     'remediation-case-resolution-rate': 'Moderate resolution: ~60% of identified cases successfully resolved.',
                     'remediation-school-reintegration': 'Moderate reintegration: ~40% of child labor cases lead to school re-enrollment.',
                     'audit-certification-performance': 'Moderate performance: Certifications/programs in places.',
+                    'hrdd-maturity-supplier': 'Medium HRDD maturity with some gaps in supplier readiness.',
+                    'farms-monitoring-remediation': 'Moderate coverage: ~65% of farms covered by monitoring and remediation systems.',
                     'volume-no-of-farms': 'Significant volume source for Nestlé coffee.',
                     'farmer-connect-units': 'Farmer Connect units present in region.',
                     'nestle-other-commodity-sourcing': 'Nestlé sources other commodities from this region.',
@@ -386,6 +392,8 @@
                     'remediation-case-resolution-rate': 'High resolution: ~80% of identified cases successfully resolved.',
                     'remediation-school-reintegration': 'High reintegration: ~70% of child labor cases lead to school re-enrollment.',
                     'audit-certification-performance': 'Good performance: Strong audit coverage and certification programs.',
+                    'hrdd-maturity-supplier': 'High HRDD maturity with strong supplier readiness and systems.',
+                    'farms-monitoring-remediation': 'High coverage: ~85% of farms covered by monitoring and remediation systems.',
                     'volume-no-of-farms': 'Significant volume source for Nestlé coffee.',
                     'farmer-connect-units': 'Farmer Connect units present in region.',
                     'nestle-other-commodity-sourcing': 'Nestlé sources other commodities from this region.',
@@ -453,13 +461,14 @@
                     });
                 }
                 
-                // Calculate Inherent Risk Score (Contextual + Supply Chain)
-                const inherentCtxWeight = 0.2;
-                const inherentSupWeight = 0.5;
-                const inherentScore = scores.contextual * inherentCtxWeight + scores.supply * inherentSupWeight;
-
-                // Calculate Overall Risk Score (Inherent + Managed)
-                const overallRiskScore = inherentScore + scores.managed;
+                // Calculate Overall Risk Score with proper weighting
+                // Contextual Risk: 15%, Supply Chain Risk: 25%, Managed Risk: 60%
+                const contextualWeight = 0.15;
+                const supplyWeight = 0.25;
+                const managedWeight = 0.60;
+                
+                const inherentScore = scores.contextual * contextualWeight + scores.supply * supplyWeight;
+                const overallRiskScore = scores.contextual * contextualWeight + scores.supply * supplyWeight + scores.managed * managedWeight;
 
                 // Calculate Business Risk Importance
                 const businessRiskScore = scores.businessRisk;
